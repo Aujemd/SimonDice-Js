@@ -100,17 +100,33 @@
         const verde = document.getElementById('verde');
 
         class Juego{
+
             constructor(){
                 this.inicializar();
+                this.generarSecuencia();
             }
 
             inicializar(){
                 btnEmpezar.classList.add('hide'); //Agregando clases a un elemento en el html
+                this.nivel = 1;//Declarando el nivel
+                this.colores = {//Inicializando los Colores
+                    celeste, //Si quieres inicializar una variable dentro de una clase la cual esta en el global se puede hacer usandola dentro de la clase con el mismo nombre
+                    violeta,
+                    naranja,
+                    verde
+                }
+            }
+            
+            generarSecuencia(){
+                this.secuencia = new Array(10).fill(0).map( n => Math.floor(Math.random() * 4))//Podemos generar atributos con this de la nada
             }
         }
         function empezarJuego(){
-            var juego = new Juego();
+            window.juego = new Juego();
         }
+
+        //Recordar map no funciona con arrays undefined.
+        //Funcion fill en array lo llena del elemento que es pasado como parámetro
     </script>
   </body>
 </html>
