@@ -86,7 +86,7 @@
   </head>
   <body>
     <div class="gameboard">
-      <div id="celeste" class="color celeste left" data-color="celeste"></div>
+      <div id="celeste" class="color celeste left" data-color="celeste"></div> 
       <div id="violeta" class="color violeta right" data-color="violeta"></div>
       <div id="naranja" class="color naranja left" data-color="naranja"></div>
       <div id="verde" class="color verde right" data-color="verde"></div>
@@ -98,16 +98,18 @@
         const violeta = document.getElementById('violeta');
         const naranja = document.getElementById('naranja');
         const verde = document.getElementById('verde');
+        const ULTIMO_NIVEL = 10;
 
         class Juego{
 
             constructor(){
                 this.inicializar();
                 this.generarSecuencia();
-                this.siguienteNivel();
+                setTimeout(this.siguienteNivel(), 500);
             }
 
             inicializar(){
+                this.siguienteNivel = this.siguienteNivel.bind(this);
                 this.elegirColor = this.elegirColor.bind(this); //Ligando el this de juego al this de la funcion elegir color
                 btnEmpezar.classList.add('hide'); //Agregando clases a un elemento en el html
                 this.nivel = 1;//Declarando el nivel
@@ -120,10 +122,11 @@
             }
             
             generarSecuencia(){
-                this.secuencia = new Array(10).fill(0).map( n => Math.floor(Math.random() * 4))//Podemos generar atributos con this de la nada
+                this.secuencia = new Array(ULTIMO_NIVEL).fill(0).map( n => Math.floor(Math.random() * 4))//Podemos generar atributos con this de la nada
             }
 
             siguienteNivel(){
+                this.subnivel = 0;
                 this.iluminarSecuencia();
                 this.agregarEventosClick();
             }
@@ -141,8 +144,41 @@
                 }
             }
 
+
+            transformarColorANumero(color){
+                switch(color){
+                    case 'celeste':
+                    return 0;
+                    case 'violeta':
+                    return 1;
+                    case 'naranja':
+                    return 2;
+                    case 'verde':
+                    return 3;
+                }
+            }
+
             elegirColor(ev){//Aqui se pierde el contexto del this, porque se toma como dis el elemento que genero el evento
-                console.log(this);
+                const nombreColor = ev.target.dataset.color;
+    
+                const numeroColor = this.transformarColorANumero(nombreColor);//Recordar siempre llamar a los metodos de clase con this
+                this.iluminarColor(nombreColor);
+
+                if(numeroColor === this.secuencia[this.subnivel]){
+                    this.subnivel++;
+                    if(this.subnivel === this.nivel){
+                        this.nivel++;
+                        this.eliminarEventosClick();
+
+                        if(this.nivel === ULTIMO_NIVEL + 1){
+                          //Gano
+                        }else{
+                          setTimeout(this.siguienteNivel, 1500);
+                        }
+                    }
+                }else{
+                  //perdió
+                }
             }
 
             agregarEventosClick(){
@@ -151,6 +187,14 @@
                 this.colores.verde.addEventListener('click', this.elegirColor);
                 this.colores.violeta.addEventListener('click', this.elegirColor);
                 this.colores.naranja .addEventListener('click', this.elegirColor);
+            }
+
+            eliminarEventosClick(){
+                //var _this = this; usar la referencia this pa bindeala en los eventos de abajo example
+                this.colores.celeste.removeEventListener('click', this.elegirColor);//Aqui agregamos el .bind para sobreponer el this del juego para que este sea el mismo en las funciones de los eventos
+                this.colores.verde.removeEventListener('click', this.elegirColor);
+                this.colores.violeta.removeEventListener('click', this.elegirColor);
+                this.colores.naranja.removeEventListener('click', this.elegirColor);
             }
 
             apagarColor(color){
@@ -176,6 +220,11 @@
 
         //Recordar map no funciona con arrays undefined.
         //Funcion fill en array lo llena del elemento que es pasado como parámetro
+
+        //EN EL HTML 
+
+        //Para poder ubicar dentro de los eventos que elemento lo causo se le debe agregar a las etiquetas html el atributo data-loquesea para
+        //que en el dataset del evento se pueda ver de que elemento especifico fue causado
     </script>
   </body>
 </html>
