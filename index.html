@@ -108,8 +108,9 @@
             }
 
             inicializar(){
+                this.elegirColor = this.elegirColor.bind(this); //Ligando el this de juego al this de la funcion elegir color
                 btnEmpezar.classList.add('hide'); //Agregando clases a un elemento en el html
-                this.nivel = 7;//Declarando el nivel
+                this.nivel = 1;//Declarando el nivel
                 this.colores = {//Inicializando los Colores
                     celeste, //Si quieres inicializar una variable dentro de una clase la cual esta en el global se puede hacer usandola dentro de la clase con el mismo nombre
                     violeta,
@@ -124,6 +125,7 @@
 
             siguienteNivel(){
                 this.iluminarSecuencia();
+                this.agregarEventosClick();
             }
 
             transformarNumeroAColor(numero){
@@ -139,6 +141,18 @@
                 }
             }
 
+            elegirColor(ev){//Aqui se pierde el contexto del this, porque se toma como dis el elemento que genero el evento
+                console.log(this);
+            }
+
+            agregarEventosClick(){
+                //var _this = this; usar la referencia this pa bindeala en los eventos de abajo example
+                this.colores.celeste.addEventListener('click', this.elegirColor);//Aqui agregamos el .bind para sobreponer el this del juego para que este sea el mismo en las funciones de los eventos
+                this.colores.verde.addEventListener('click', this.elegirColor);
+                this.colores.violeta.addEventListener('click', this.elegirColor);
+                this.colores.naranja .addEventListener('click', this.elegirColor);
+            }
+
             apagarColor(color){
                 this.colores[color].classList.remove('light');//Quitando css de este elemento
             }
@@ -146,7 +160,7 @@
             iluminarColor(color){
                 this.colores[color].classList.add('light');//Agregando css a este elemento
                 setTimeout(()=> this.apagarColor(color), 350);
-            }
+            } 
 
             iluminarSecuencia(){
                 for(let i = 0 ; i <  this.nivel; i++){ //Usar let en ciclos para que caada iteracion sea diferente
