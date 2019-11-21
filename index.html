@@ -4,6 +4,9 @@
     <meta charset="utf-8">
     <title>Simon Dice</title>
     <style>
+      *{
+        font-family: system-ui;
+      }
       body {
         margin: 0;
         background: #dedede;
@@ -92,7 +95,11 @@
       <div id="verde" class="color verde right" data-color="verde"></div>
       <button id="btnEmpezar" class="btn-start" onclick="empezarJuego()">Empezar a jugar!</button>
     </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
     <script>
+      //Se agrego el script de los alerts cute ^
+      
+
         const btnEmpezar = document.getElementById('btnEmpezar');
         const celeste = document.getElementById('celeste');
         const violeta = document.getElementById('violeta');
@@ -108,10 +115,19 @@
                 setTimeout(this.siguienteNivel(), 500);
             }
 
+            toggleBtnEmpezar(){
+              if(btnEmpezar.classList.contains('hide')){
+                btnEmpezar.classList.remove('hide');
+              }else{
+                btnEmpezar.classList.add('hide');
+              }
+            }
+
             inicializar(){
                 this.siguienteNivel = this.siguienteNivel.bind(this);
                 this.elegirColor = this.elegirColor.bind(this); //Ligando el this de juego al this de la funcion elegir color
-                btnEmpezar.classList.add('hide'); //Agregando clases a un elemento en el html
+                this.toggleBtnEmpezar();
+                //btnEmpezar.classList.add('hide'); //Agregando clases a un elemento en el html
                 this.nivel = 1;//Declarando el nivel
                 this.colores = {//Inicializando los Colores
                     celeste, //Si quieres inicializar una variable dentro de una clase la cual esta en el global se puede hacer usandola dentro de la clase con el mismo nombre
@@ -171,14 +187,27 @@
                         this.eliminarEventosClick();
 
                         if(this.nivel === ULTIMO_NIVEL + 1){
-                          //Gano
+                          this.ganoElJuego();
                         }else{
                           setTimeout(this.siguienteNivel, 1500);
                         }
                     }
                 }else{
-                  //perdió
+                  this.perdioElJuego();
                 }
+            }
+
+            ganoElJuego(){
+              swal('Platzi', 'Ganaste el juego!', 'success')
+              .then(() => this.inicializar());
+            }
+
+            perdioElJuego(){
+              swal('Platzi', 'Lo lamentamos perdiste :(', 'error')
+              .then(() => {
+                this.eliminarEventosClick();
+                this.inicializar();
+                });
             }
 
             agregarEventosClick(){
