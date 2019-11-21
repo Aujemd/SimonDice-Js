@@ -104,11 +104,12 @@
             constructor(){
                 this.inicializar();
                 this.generarSecuencia();
+                this.siguienteNivel();
             }
 
             inicializar(){
                 btnEmpezar.classList.add('hide'); //Agregando clases a un elemento en el html
-                this.nivel = 1;//Declarando el nivel
+                this.nivel = 7;//Declarando el nivel
                 this.colores = {//Inicializando los Colores
                     celeste, //Si quieres inicializar una variable dentro de una clase la cual esta en el global se puede hacer usandola dentro de la clase con el mismo nombre
                     violeta,
@@ -120,9 +121,43 @@
             generarSecuencia(){
                 this.secuencia = new Array(10).fill(0).map( n => Math.floor(Math.random() * 4))//Podemos generar atributos con this de la nada
             }
+
+            siguienteNivel(){
+                this.iluminarSecuencia();
+            }
+
+            transformarNumeroAColor(numero){
+                switch(numero){
+                    case 0:
+                    return 'celeste';
+                    case 1:
+                    return 'violeta';
+                    case 2:
+                    return 'naranja';
+                    case 3:
+                    return 'verde';
+                }
+            }
+
+            apagarColor(color){
+                this.colores[color].classList.remove('light');//Quitando css de este elemento
+            }
+
+            iluminarColor(color){
+                this.colores[color].classList.add('light');//Agregando css a este elemento
+                setTimeout(()=> this.apagarColor(color), 350);
+            }
+
+            iluminarSecuencia(){
+                for(let i = 0 ; i <  this.nivel; i++){ //Usar let en ciclos para que caada iteracion sea diferente
+                    let color = this.transformarNumeroAColor(this.secuencia[i]);
+                    setTimeout(()=>this.iluminarColor(color), 1000 * i);
+                }
+            }
+
         }
         function empezarJuego(){
-            window.juego = new Juego();
+            window.juego = new Juego();// Agregando la var juego al window para poder depurar por console
         }
 
         //Recordar map no funciona con arrays undefined.
